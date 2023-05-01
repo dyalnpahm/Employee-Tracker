@@ -88,7 +88,7 @@ viewAllDepartments = () => {
 };
 
 viewAllRoles = () => {
-    connection.query('SELECT role.role_id, role.title, role_salary, department.department_name AS department ', (err, res) => {
+    connection.query('SELECT * FROM role', (err, res) => {
         if (err) throw err;
         console.table(res);
         start();
@@ -96,7 +96,7 @@ viewAllRoles = () => {
 };
 
 viewAllEmployees = () => {
-    connection.query('SELECT employee.employee_id, employee.first_name, employee.last_name, role.title, department.department_name, role.salary, CONCAT(manager.first_name, " ", manager.last_name)Manager FROM employee LEFT JOIN role ON employee.role_id = role.id  LEFT JOIN department ON role.department_id = department.id LEFT JOIN employee manager ON employee.manager_id = manager.id;', (err, res) => {
+    connection.query('SELECT * FROM employee', (err, res) => {
         if (err) throw err;
         console.table(res);
         start();
@@ -143,7 +143,7 @@ addRole = () => {
             type: 'list',
             name: 'department',
             message: 'What department is this role apart of?',
-            choices: departments
+            choices: viewAllDepartments
         },
     ]).then((answers) => {
         connection.query('INSERT INTO role SET?'),
@@ -175,14 +175,14 @@ addAnEmployee = () => {
         {
             type: 'list',
             name: 'role',
-            message: "Who is the new employee's role?",
-            choices: roles
+            message: "What is the new employee's role?",
+            choices: viewAllRoles
         },
         {
             type: 'list',
             name: 'manager',
             message: "Who is the new employee's manager?",
-            chocies: employee
+            chocies: viewAllEmployees
         }
     ]).then((response) => {
         connection.query(`INSERT INTO employee SET ?`,
